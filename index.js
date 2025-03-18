@@ -3,6 +3,7 @@ const app = express()
 const port = 5008
 const ejs = require('ejs')
 const mongoose = require("mongoose")
+require('dotenv').config()
 
 app.set("view engine", "ejs")
 app.use(express.urlencoded({ extended: true }))
@@ -67,14 +68,7 @@ app.post("/user/update/:id", async (req, res) => {
 
         const { id } = req.params; 
         const { task } = req.body; 
-
-        // Find and update task in MongoDB
         const updatedTask = await todoModel.findByIdAndUpdate(id, { task: task }, { new: true });
-
-        if (!updatedTask) {
-            console.log("Task not found!");
-            return res.status(404).json({ error: "Task not found" });
-        }
 
         console.log("Updated task:", updatedTask); // Logs updated task
         res.redirect("/");
@@ -85,11 +79,10 @@ app.post("/user/update/:id", async (req, res) => {
 })
 
 
-const uri = "mongodb+srv://idamodotun:AkinOlaKemi45@cluster0.8mnfa.mongodb.net/todoList?retryWrites=true&w=majority&appName=Cluster0"
 
 const connect = async () => {
     try {
-        const connected = await mongoose.connect(uri)
+        const connected = await mongoose.connect(process.env.mongoUri)
         if (connected) {
             console.log("Connection to database is successful");
 
