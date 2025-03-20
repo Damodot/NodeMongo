@@ -12,68 +12,101 @@
     <title>To Do List</title>
     <style>
         body {
-            width: 100dvw;
-            height: 100dvh;
+            background-color: #343a40;
         }
 
         main {
-            width: 40%;
+            background-color: #212529;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            width: 100%;
+            /* Make main full width */
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            padding: 1rem;
+        }
+
+        main {
+            width: 50%;
+            margin: auto;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        main::-webkit-scrollbar{
+            width: 0;
+        }
+
+        .task-card {
+            padding: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .task-card:hover {
+            transform: scale(1.02);
         }
 
         button:active {
             transform: scale(0.9);
             transition: transform 0.5s ease;
         }
+
+        @media (max-width: 767px) {
+            main {
+                width: 85%;
+            }
+        }
     </style>
-    <script>
-        // function validateForm() {
-        //     const taskInput = document.querySelector('input[name="task"]');
-        //     if (taskInput.value.trim() === '') {
-        //         alert('Please enter a task before submitting.');
-        //         return false;
-        //     }
-        //     return true;
-        // }
-    </script>
 </head>
 
-<body class="d-flex justify-content-content align-items-center">
-    <main class="m-auto shadow rounded-4 p-4">
-        <form action="/user/task" method="post" class="rounded-4p-3 m-auto">
-            <h1 class="text-center fw-bolder">To Do List</h1>
-            <input type="text" placeholder="Add Reminder" name="task" class="mt-4 form-control">
-
-            <button class="btn btn-primary px-3 mt-4 rounded-4" type="submit">Add Reminder</button>
+<body class="d-flex justify-content-center align-items-center vh-100">
+    <main>
+        <form action="/user/task" method="post" class="mb-4">
+            <div class="header">
+                <h1 class="text-center fw-bolder text-white">To Do List</h1>
+                <div class="input-group mt-4 w-100"> 
+                    <input type="text" placeholder="Add Reminder" name="task" class="form-control w-100 rounded-3">
+                    <button class="btn btn-info mt-lg-4 rounded-3" type="submit">Add Reminder</button>
+                </div>
+            </div>
         </form>
-        <div id="reply" class="mt-4">
+        <div id="reply">
             <% if (!database) { %>
-                <h1 class="fw-bolder">Please enter your task</h1>
+                <h1 class="fw-bolder text-center">Please enter your task</h1>
                 <% } else { %>
                     <% database.forEach((taskObj, index)=> { %>
-                        <section class="d-flex align-items-center justify-content-between mt-4">
-                            <div class="sideOne d-flex">
-                                <h3 class="fw-bolder">
+                        <div class="task-card d-flex flex-column justify-content-between align-items-start"
+                            style="border: 2px solid #28a745;">
+                            <div class="d-flex align-items-center">
+                                <h3 class="fw-bolder me-3 text-white">
                                     <%= index + 1 %>
                                 </h3>
-                                <h3 class="ms-4 fw-bolder">
+                                <h3 class="fw-bolder text-white">
                                     <%= taskObj.task.toUpperCase() %>
                                 </h3>
                             </div>
-                            <div class="otherSide d-flex">
+                            <div class="d-flex">
                                 <form action="/user/edit/<%= taskObj._id %>" method="get" class="d-inline">
-                                    <button class="btn btn-success rounded-4" type="submit">Edit</button>
+                                    <button class="btn btn-success me-2" type="submit">Edit</button>
                                 </form>
-                                <form action="/user/delete/<%= taskObj._id %>" method="post" class="d-inline ms-3">
-                                    <button class="btn btn-danger rounded-4" type="submit">Delete</button>
+                                <form action="/user/delete/<%= taskObj._id %>" method="post" class="d-inline">
+                                    <button class="btn btn-danger" type="submit">Delete</button>
                                 </form>
                             </div>
-                        </section>
-                        <hr class="my-4">
+                        </div>
                         <% }); %>
                             <% } %>
         </div>
     </main>
-
 </body>
 
 </html>
